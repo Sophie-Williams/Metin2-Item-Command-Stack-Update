@@ -51,7 +51,7 @@ ACMD(do_book)
 
 	CSkillProto * pkProto;
 	if (*arg1 && isnhdigit(*arg1)) {
-		const DWORD vnum = std::stoi(arg1);
+		const DWORD vnum = std::stoul(arg1);
 		pkProto = CSkillManager::instance().Get(vnum);
 	}
 	else 
