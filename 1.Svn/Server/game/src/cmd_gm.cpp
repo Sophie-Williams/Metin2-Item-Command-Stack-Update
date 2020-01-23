@@ -35,3 +35,42 @@
 		LogManager::instance().ItemLog(ch, item, "GM", item->GetName());
 		iCount -= item->IsStackable() ? ITEM_MAX_COUNT : 1;
 	}
+
+//Find
+ACMD(do_book)
+{
+	...
+	...
+}
+
+///Change all
+ACMD(do_book)
+{
+	char arg1[256], arg2[256];
+	two_arguments(argument, arg1, sizeof(arg1), arg2, sizeof(arg2));
+
+	CSkillProto * pkProto;
+	if (*arg1 && isnhdigit(*arg1)) {
+		const DWORD vnum = std::stoi(arg1);
+		pkProto = CSkillManager::instance().Get(vnum);
+	}
+	else 
+		pkProto = CSkillManager::instance().Get(arg1);
+
+	if (!pkProto) {
+		ch->ChatPacket(CHAT_TYPE_INFO, "There is no such a skill.");
+		return;
+	}
+
+	int count = 1;
+	if (*arg2 && isnhdigit(*arg2))
+		count = std::stoi(arg2);
+
+	while (count > 0) {
+		const LPITEM item = ch->AutoGiveItem(50300, count > ITEM_MAX_COUNT ? ITEM_MAX_COUNT : count);
+		if (!item)
+			return;
+		item->SetSocket(0, pkProto->dwVnum);
+		count-= ITEM_MAX_COUNT;
+	}
+}
